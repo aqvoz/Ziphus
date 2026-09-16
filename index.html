@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIPHUS // Signal & Cipher Engine</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #080313;
+      color: #00f6ff;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .terminal {
+      width: 100%;
+      max-width: 680px;
+      background: #100624;
+      border: 2px solid #ff0055;
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+      padding: 25px;
+      border-radius: 6px;
+    }
+
+    header h1 {
+      color: #ff0055;
+      text-shadow: 0 0 10px #ff0055;
+      font-size: 2rem;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      color: #8f85b8;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: #00f6ff;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    select, textarea, button {
+      width: 100%;
+      background: #080313;
+      color: #00f6ff;
+      border: 1px solid #00f6ff;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      border-radius: 4px;
+    }
+
+    .workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      height: 90px;
+      resize: vertical;
+    }
+
+    textarea:focus, select:focus {
+      outline: none;
+      border-color: #ff0055;
+      box-shadow: 0 0 8px rgba(255, 0, 85, 0.5);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      background: transparent;
+      color: #ff0055;
+      border-color: #ff0055;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: #ff0055;
+      color: #fff;
+      box-shadow: 0 0 12px #ff0055;
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <header>
+      <h1>CIPHUS_</h1>
+      <p>Real-Time Signal Translator & Encryption Matrix</p>
+    </header>
+
+    <div class="controls">
+      <label for="modeSelect">Target Protocol:</label>
+      <select id="modeSelect">
+        <option value="morse">Morse Code Signal</option>
+        <option value="binary">8-Bit Binary Stream</option>
+        <option value="cybershift">Cyber-Shift Cipher (+3)</option>
+      </select>
+    </div>
+
+    <div class="workspace">
+      <div class="field-group">
+        <label for="inputText">Input Payload:</label>
+        <textarea id="inputText" placeholder="Enter plain text to encode..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label for="outputText">Translated Signal:</label>
+        <textarea id="outputText" readonly placeholder="Output stream..."></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="copyBtn">Copy Signal</button>
+      <button id="audioBtn">Transmit Audio</button>
+    </div>
+  </div>
+
+  <script>
+    const MORSE_MAP = {
+      'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+      'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+      'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+      'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+      'Y': '-.--', 'Z': '--..', '1': '.----', '2': '..---', '3': '...--', 
+      '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..', 
+      '9': '----.', '0': '-----', ' ': '/'
+    };
+
+    const inputText = document.getElementById('inputText');
+    const outputText = document.getElementById('outputText');
+    const modeSelect = document.getElementById('modeSelect');
+    const copyBtn = document.getElementById('copyBtn');
+    const audioBtn = document.getElementById('audioBtn');
+
+    function processTranslation() {
+      const input = inputText.value.toUpperCase();
+      const mode = modeSelect.value;
+      let result = '';
+
+      if (mode === 'morse') {
+        result = input.split('').map(char => MORSE_MAP[char] || char).join(' ');
+      } else if (mode === 'binary') {
+        result = input.split('').map(char => char.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+      } else if (mode === 'cybershift') {
+        result = input.split('').map(char => {
+          const code = char.charCodeAt(0);
+          return (code >= 65 && code <= 90) ? String.fromCharCode(((code - 65 + 3) % 26) + 65) : char;
+        }).join('');
+      }
+
+      outputText.value = result;
+    }
+
+    inputText.addEventListener('input', processTranslation);
+    modeSelect.addEventListener('change', processTranslation);
+
+    copyBtn.addEventListener('click', () => {
+      if (!outputText.value) return;
+      navigator.clipboard.writeText(outputText.value);
+      alert('CIPHUS: Signal payload copied to clipboard.');
+    });
+
+    audioBtn.addEventListener('click', () => {
+      if (!outputText.value) return;
+
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.4);
+      osc.stop(audioCtx.currentTime + 0.4);
+    });
+  </script>
+</body>
+</html>
