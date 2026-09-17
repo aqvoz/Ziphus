@@ -6,28 +6,15 @@
 <title>CIPHUS // Signal Engine</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-min-height:100vh;background:#11171b;color:#b8c5bc;
-font-family:"Courier New",monospace;padding:24px;
-display:flex;align-items:center;justify-content:center
-}
+body{min-height:100vh;background:#11171b;color:#b8c5bc;font-family:"Courier New",monospace;padding:24px;display:flex;align-items:center;justify-content:center}
 .app{width:100%;max-width:850px;border:1px solid #303833;background:#101311}
-.top{
-padding:18px 20px;border-bottom:1px solid #303833;
-display:flex;justify-content:space-between;align-items:end
-}
+.top{padding:18px 20px;border-bottom:1px solid #303833;display:flex;justify-content:space-between;align-items:end}
 h1{font-size:22px;letter-spacing:3px;color:#d8e2da}
 .sub{font-size:11px;color:#68736c;margin-top:5px}
 .status{font-size:10px;color:#728078}.status span{color:#9fbaa9}
 .main{padding:20px}
-label{
-display:block;font-size:10px;color:#7e8b83;
-letter-spacing:1px;margin-bottom:7px;text-transform:uppercase
-}
-select,textarea,button{
-width:100%;font:inherit;border:1px solid #343c37;
-background:#0b0e0c;color:#bfcac2;padding:10px;border-radius:0
-}
+label{display:block;font-size:10px;color:#7e8b83;letter-spacing:1px;margin-bottom:7px;text-transform:uppercase}
+select,textarea,button{width:100%;font:inherit;border:1px solid #343c37;background:#0b0e0c;color:#bfcac2;padding:10px;border-radius:0}
 select{cursor:pointer}
 textarea{height:180px;resize:vertical;line-height:1.5;outline:none}
 textarea:focus,select:focus{border-color:#728579}
@@ -39,10 +26,7 @@ button{cursor:pointer;color:#a9b7ae;transition:.15s}
 button:hover{background:#18201b;border-color:#728579;color:#e0e8e2}
 #copy{border-color:#56665b}
 .notice{margin-top:12px;padding-top:10px;border-top:1px solid #252b27;font-size:10px;color:#59645d}
-@media(max-width:650px){
-.workspace{grid-template-columns:1fr}textarea{height:140px}
-.top{align-items:flex-start;gap:10px}.status{display:none}
-}
+@media(max-width:650px){.workspace{grid-template-columns:1fr}textarea{height:140px}.top{align-items:flex-start;gap:10px}.status{display:none}}
 </style>
 </head>
 <body>
@@ -101,20 +85,25 @@ mode=document.getElementById('mode'),count=document.getElementById('count'),
 modeLabel=document.getElementById('modeLabel');
 
 function translate(){
-const text=input.value.toUpperCase();let result='';
+const text=input.value;let result='';
 if(mode.value==='morse'){
-result=[...text].map(c=>MORSE[c]||c).join(' ');modeLabel.textContent='MORSE';
+result=[...text.toUpperCase()].map(c=>MORSE[c]||c).join(' ');
+modeLabel.textContent='MORSE';
 }
 if(mode.value==='binary'){
 result=[...text].map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
 modeLabel.textContent='BINARY';
 }
 if(mode.value==='shift'){
-result=[...text].map(c=>c>='A'&&c<='Z'?
-String.fromCharCode((c.charCodeAt(0)-65+3)%26+65):c).join('');
+result=[...text].map(c=>{
+if(c>='A'&&c<='Z')return String.fromCharCode((c.charCodeAt(0)-65+3)%26+65);
+if(c>='a'&&c<='z')return String.fromCharCode((c.charCodeAt(0)-97+3)%26+97);
+return c;
+}).join('');
 modeLabel.textContent='SHIFT+3';
 }
-output.value=result;count.textContent=text.length+' CH';
+output.value=result;
+count.textContent=text.length+' CH';
 }
 
 input.addEventListener('input',translate);
@@ -123,8 +112,9 @@ mode.addEventListener('change',translate);
 document.getElementById('copy').onclick=async()=>{
 if(!output.value)return;
 await navigator.clipboard.writeText(output.value);
-document.getElementById('copy').textContent='COPIED ✓';
-setTimeout(()=>document.getElementById('copy').textContent='COPY SIGNAL',1000);
+const b=document.getElementById('copy');
+b.textContent='COPIED ✓';
+setTimeout(()=>b.textContent='COPY SIGNAL',1000);
 };
 
 document.getElementById('clear').onclick=()=>{
