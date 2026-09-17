@@ -7,189 +7,140 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{
-  min-height:100vh;background:#0b0d0c;color:#b8c5bc;
-  font-family:"Courier New",monospace;padding:24px;
-  display:flex;align-items:center;justify-content:center
+min-height:100vh;background:#111923;color:#bac5ce;
+font:14px "Courier New",monospace;padding:24px;
+display:flex;align-items:center;justify-content:center
 }
-.app{
-  width:100%;max-width:850px;border:1px solid #303833;
-  background:#101311
-}
+.app{width:100%;max-width:850px;border:1px solid #34424d;background:#17212b}
 .top{
-  padding:18px 20px;border-bottom:1px solid #303833;
-  display:flex;justify-content:space-between;align-items:end
+padding:18px 20px;border-bottom:1px solid #34424d;
+display:flex;justify-content:space-between;align-items:end
 }
-h1{font-size:22px;letter-spacing:3px;color:#d8e2da}
-.sub{font-size:11px;color:#68736c;margin-top:5px}
-.status{font-size:10px;color:#728078}
-.status span{color:#9fbaa9}
+h1{font-size:22px;letter-spacing:3px;color:#d6dee4}
+.sub{font-size:11px;color:#71808c;margin-top:5px}
+.status{font-size:10px;color:#71808c}.status span{color:#9cafaa}
 .main{padding:20px}
 label{
-  display:block;font-size:10px;color:#7e8b83;
-  letter-spacing:1px;margin-bottom:7px;text-transform:uppercase
+display:block;font-size:10px;color:#84929c;
+letter-spacing:1px;margin-bottom:7px;text-transform:uppercase
 }
 select,textarea,button{
-  width:100%;font:inherit;border:1px solid #343c37;
-  background:#0b0e0c;color:#bfcac2;padding:10px;
-  border-radius:0
+width:100%;font:inherit;border:1px solid #3a4955;
+background:#111a23;color:#bec9d1;padding:10px;border-radius:0
 }
 select{cursor:pointer}
-textarea{
-  height:180px;resize:vertical;line-height:1.5;
-  outline:none
-}
-textarea:focus,select:focus{border-color:#728579}
-.workspace{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:12px;margin-top:15px
-}
-.field{min-width:0}
-.meta{
-  display:flex;justify-content:space-between;
-  margin-top:6px;font-size:9px;color:#566159
-}
+textarea{height:180px;resize:vertical;line-height:1.5;outline:0}
+textarea:focus,select:focus{border-color:#718696}
+.workspace{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}
+.meta{display:flex;justify-content:space-between;margin-top:6px;font-size:9px;color:#62707a}
 .actions{display:flex;gap:10px;margin-top:15px}
-button{
-  cursor:pointer;color:#a9b7ae;
-  transition:.15s
-}
-button:hover{
-  background:#18201b;border-color:#728579;color:#e0e8e2
-}
-#copyBtn{border-color:#56665b}
+button{cursor:pointer;color:#aebbc4;transition:.15s}
+button:hover{background:#202d38;border-color:#718696;color:#e0e6ea}
+#copy{border-color:#53636e}
 .notice{
-  margin-top:12px;padding-top:10px;
-  border-top:1px solid #252b27;
-  font-size:10px;color:#59645d
+margin-top:12px;padding-top:10px;border-top:1px solid #2b3740;
+font-size:10px;color:#64727c
 }
 @media(max-width:650px){
-  .workspace{grid-template-columns:1fr}
-  textarea{height:140px}
-  .top{align-items:flex-start;gap:10px}
-  .status{display:none}
+.workspace{grid-template-columns:1fr}
+textarea{height:140px}
+.top{align-items:flex-start;gap:10px}
+.status{display:none}
 }
 </style>
 </head>
 
 <body>
 <div class="app">
+<header class="top">
+<div>
+<h1>CIPHUS_</h1>
+<p class="sub">SIGNAL & CIPHER ENGINE // LOCAL PROCESSOR</p>
+</div>
+<div class="status">STATUS: <span>ONLINE</span></div>
+</header>
 
-  <header class="top">
-    <div>
-      <h1>CIPHUS_</h1>
-      <p class="sub">SIGNAL & CIPHER ENGINE // LOCAL PROCESSOR</p>
-    </div>
-    <div class="status">STATUS: <span>ONLINE</span></div>
-  </header>
+<main class="main">
+<label for="mode">Target protocol</label>
+<select id="mode">
+<option value="morse">Morse Code Signal</option>
+<option value="binary">8-Bit Binary Stream</option>
+<option value="shift">Cyber-Shift Cipher (+3)</option>
+</select>
 
-  <main class="main">
+<section class="workspace">
+<div>
+<label for="input">Input payload</label>
+<textarea id="input" placeholder="Enter text to translate..."></textarea>
+<div class="meta"><span>INPUT</span><span id="count">0 CH</span></div>
+</div>
 
-    <label for="mode">Target protocol</label>
-    <select id="mode">
-      <option value="morse">Morse Code Signal</option>
-      <option value="binary">8-Bit Binary Stream</option>
-      <option value="shift">Cyber-Shift Cipher (+3)</option>
-    </select>
+<div>
+<label for="output">Translated signal</label>
+<textarea id="output" readonly placeholder="Output stream..."></textarea>
+<div class="meta"><span>OUTPUT</span><span id="modeLabel">MORSE</span></div>
+</div>
+</section>
 
-    <section class="workspace">
+<div class="actions">
+<button id="copy">COPY SIGNAL</button>
+<button id="clear">CLEAR BUFFER</button>
+</div>
 
-      <div class="field">
-        <label for="input">Input payload</label>
-        <textarea id="input" placeholder="Enter text to translate..."></textarea>
-        <div class="meta">
-          <span>INPUT</span>
-          <span id="count">0 CH</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="output">Translated signal</label>
-        <textarea id="output" readonly placeholder="Output stream..."></textarea>
-        <div class="meta">
-          <span>OUTPUT</span>
-          <span id="modeLabel">MORSE</span>
-        </div>
-      </div>
-
-    </section>
-
-    <div class="actions">
-      <button id="copy">COPY SIGNAL</button>
-      <button id="clear">CLEAR BUFFER</button>
-    </div>
-
-    <div class="notice">
-      CIPHUS // Translation is processed locally in your browser.
-    </div>
-
-  </main>
+<div class="notice">CIPHUS // Translation is processed locally in your browser.</div>
+</main>
 </div>
 
 <script>
 const MORSE={
-A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',
-H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',
-O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',
-V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..',
-0:'-----',1:'.----',2:'..---',3:'...--',4:'....-',5:'.....',
-6:'-....',7:'--...',8:'---..',9:'----.',' ':'/'
+A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',
+I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',
+Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',
+Y:'-.--',Z:'--..',0:'-----',1:'.----',2:'..---',3:'...--',
+4:'....-',5:'.....',6:'-....',7:'--...',8:'---..',9:'----.',' ':'/'
 };
 
-const input=document.getElementById('input');
-const output=document.getElementById('output');
-const mode=document.getElementById('mode');
-const count=document.getElementById('count');
-const modeLabel=document.getElementById('modeLabel');
+const input=document.getElementById('input'),
+output=document.getElementById('output'),
+mode=document.getElementById('mode'),
+count=document.getElementById('count'),
+label=document.getElementById('modeLabel');
 
 function translate(){
-  const text=input.value.toUpperCase();
-  let result='';
-
-  if(mode.value==='morse'){
-    result=[...text].map(c=>MORSE[c]||c).join(' ');
-    modeLabel.textContent='MORSE';
-  }
-
-  if(mode.value==='binary'){
-    result=[...text]
-      .map(c=>c.charCodeAt(0).toString(2).padStart(8,'0'))
-      .join(' ');
-    modeLabel.textContent='BINARY';
-  }
-
-  if(mode.value==='shift'){
-    result=[...text].map(c=>{
-      if(c>='A'&&c<='Z')
-        return String.fromCharCode((c.charCodeAt(0)-65+3)%26+65);
-      return c;
-    }).join('');
-    modeLabel.textContent='SHIFT+3';
-  }
-
-  output.value=result;
-  count.textContent=text.length+' CH';
+let t=input.value.toUpperCase(),r='';
+if(mode.value==='morse'){
+r=[...t].map(c=>MORSE[c]||c).join(' ');
+label.textContent='MORSE';
+}
+if(mode.value==='binary'){
+r=[...t].map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
+label.textContent='BINARY';
+}
+if(mode.value==='shift'){
+r=[...t].map(c=>c>='A'&&c<='Z'
+?String.fromCharCode((c.charCodeAt(0)-65+3)%26+65):c).join('');
+label.textContent='SHIFT+3';
+}
+output.value=r;
+count.textContent=t.length+' CH';
 }
 
 input.addEventListener('input',translate);
 mode.addEventListener('change',translate);
 
-document.getElementById('copy').onclick=async()=>{
-  if(!output.value)return;
-  await navigator.clipboard.writeText(output.value);
-  document.getElementById('copy').textContent='COPIED ✓';
-  setTimeout(()=>{
-    document.getElementById('copy').textContent='COPY SIGNAL';
-  },1000);
+copy.onclick=async()=>{
+if(!output.value)return;
+await navigator.clipboard.writeText(output.value);
+copy.textContent='COPIED ✓';
+setTimeout(()=>copy.textContent='COPY SIGNAL',1000);
 };
 
-document.getElementById('clear').onclick=()=>{
-  input.value='';
-  output.value='';
-  translate();
-  input.focus();
+clear.onclick=()=>{
+input.value=output.value='';
+translate();input.focus();
 };
 
 translate();
 </script>
 </body>
-</html>
+</html> 
