@@ -7,50 +7,46 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{
-min-height:100vh;background:#111923;color:#bac5ce;
-font:14px "Courier New",monospace;padding:24px;
+min-height:100vh;background:#11171b;color:#b8c5bc;
+font-family:"Courier New",monospace;padding:24px;
 display:flex;align-items:center;justify-content:center
 }
-.app{width:100%;max-width:850px;border:1px solid #34424d;background:#17212b}
+.app{width:100%;max-width:850px;border:1px solid #303833;background:#101311}
 .top{
-padding:18px 20px;border-bottom:1px solid #34424d;
+padding:18px 20px;border-bottom:1px solid #303833;
 display:flex;justify-content:space-between;align-items:end
 }
-h1{font-size:22px;letter-spacing:3px;color:#d6dee4}
-.sub{font-size:11px;color:#71808c;margin-top:5px}
-.status{font-size:10px;color:#71808c}.status span{color:#9cafaa}
+h1{font-size:22px;letter-spacing:3px;color:#d8e2da}
+.sub{font-size:11px;color:#68736c;margin-top:5px}
+.status{font-size:10px;color:#728078}.status span{color:#9fbaa9}
 .main{padding:20px}
 label{
-display:block;font-size:10px;color:#84929c;
+display:block;font-size:10px;color:#7e8b83;
 letter-spacing:1px;margin-bottom:7px;text-transform:uppercase
 }
 select,textarea,button{
-width:100%;font:inherit;border:1px solid #3a4955;
-background:#111a23;color:#bec9d1;padding:10px;border-radius:0
+width:100%;font:inherit;border:1px solid #343c37;
+background:#0b0e0c;color:#bfcac2;padding:10px;border-radius:0
 }
 select{cursor:pointer}
-textarea{height:180px;resize:vertical;line-height:1.5;outline:0}
-textarea:focus,select:focus{border-color:#718696}
+textarea{height:180px;resize:vertical;line-height:1.5;outline:none}
+textarea:focus,select:focus{border-color:#728579}
 .workspace{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}
-.meta{display:flex;justify-content:space-between;margin-top:6px;font-size:9px;color:#62707a}
+.field{min-width:0}
+.meta{display:flex;justify-content:space-between;margin-top:6px;font-size:9px;color:#566159}
 .actions{display:flex;gap:10px;margin-top:15px}
-button{cursor:pointer;color:#aebbc4;transition:.15s}
-button:hover{background:#202d38;border-color:#718696;color:#e0e6ea}
-#copy{border-color:#53636e}
-.notice{
-margin-top:12px;padding-top:10px;border-top:1px solid #2b3740;
-font-size:10px;color:#64727c
-}
+button{cursor:pointer;color:#a9b7ae;transition:.15s}
+button:hover{background:#18201b;border-color:#728579;color:#e0e8e2}
+#copy{border-color:#56665b}
+.notice{margin-top:12px;padding-top:10px;border-top:1px solid #252b27;font-size:10px;color:#59645d}
 @media(max-width:650px){
-.workspace{grid-template-columns:1fr}
-textarea{height:140px}
-.top{align-items:flex-start;gap:10px}
-.status{display:none}
+.workspace{grid-template-columns:1fr}textarea{height:140px}
+.top{align-items:flex-start;gap:10px}.status{display:none}
 }
 </style>
 </head>
-
 <body>
+
 <div class="app">
 <header class="top">
 <div>
@@ -69,13 +65,13 @@ textarea{height:140px}
 </select>
 
 <section class="workspace">
-<div>
+<div class="field">
 <label for="input">Input payload</label>
 <textarea id="input" placeholder="Enter text to translate..."></textarea>
 <div class="meta"><span>INPUT</span><span id="count">0 CH</span></div>
 </div>
 
-<div>
+<div class="field">
 <label for="output">Translated signal</label>
 <textarea id="output" readonly placeholder="Output stream..."></textarea>
 <div class="meta"><span>OUTPUT</span><span id="modeLabel">MORSE</span></div>
@@ -96,51 +92,46 @@ const MORSE={
 A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',
 I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',
 Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',
-Y:'-.--',Z:'--..',0:'-----',1:'.----',2:'..---',3:'...--',
-4:'....-',5:'.....',6:'-....',7:'--...',8:'---..',9:'----.',' ':'/'
+Y:'-.--',Z:'--..',0:'-----',1:'.----',2:'..---',3:'...--',4:'....-',
+5:'.....',6:'-....',7:'--...',8:'---..',9:'----.',' ':'/'
 };
 
-const input=document.getElementById('input'),
-output=document.getElementById('output'),
-mode=document.getElementById('mode'),
-count=document.getElementById('count'),
-label=document.getElementById('modeLabel');
+const input=document.getElementById('input'),output=document.getElementById('output'),
+mode=document.getElementById('mode'),count=document.getElementById('count'),
+modeLabel=document.getElementById('modeLabel');
 
 function translate(){
-let t=input.value.toUpperCase(),r='';
+const text=input.value.toUpperCase();let result='';
 if(mode.value==='morse'){
-r=[...t].map(c=>MORSE[c]||c).join(' ');
-label.textContent='MORSE';
+result=[...text].map(c=>MORSE[c]||c).join(' ');modeLabel.textContent='MORSE';
 }
 if(mode.value==='binary'){
-r=[...t].map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
-label.textContent='BINARY';
+result=[...text].map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
+modeLabel.textContent='BINARY';
 }
 if(mode.value==='shift'){
-r=[...t].map(c=>c>='A'&&c<='Z'
-?String.fromCharCode((c.charCodeAt(0)-65+3)%26+65):c).join('');
-label.textContent='SHIFT+3';
+result=[...text].map(c=>c>='A'&&c<='Z'?
+String.fromCharCode((c.charCodeAt(0)-65+3)%26+65):c).join('');
+modeLabel.textContent='SHIFT+3';
 }
-output.value=r;
-count.textContent=t.length+' CH';
+output.value=result;count.textContent=text.length+' CH';
 }
 
 input.addEventListener('input',translate);
 mode.addEventListener('change',translate);
 
-copy.onclick=async()=>{
+document.getElementById('copy').onclick=async()=>{
 if(!output.value)return;
 await navigator.clipboard.writeText(output.value);
-copy.textContent='COPIED ✓';
-setTimeout(()=>copy.textContent='COPY SIGNAL',1000);
+document.getElementById('copy').textContent='COPIED ✓';
+setTimeout(()=>document.getElementById('copy').textContent='COPY SIGNAL',1000);
 };
 
-clear.onclick=()=>{
-input.value=output.value='';
-translate();input.focus();
+document.getElementById('clear').onclick=()=>{
+input.value='';output.value='';translate();input.focus();
 };
 
 translate();
 </script>
 </body>
-</html> 
+</html>
