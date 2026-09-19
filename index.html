@@ -49,12 +49,17 @@ button:hover{background:#18201b;border-color:#536359;color:#e0e8e2}
 <option value="decode">Decode</option>
 </select>
 
-<label for="mode" style="margin-top:12px">Target protocol</label>
-<select id="mode">
-<option value="morse">Morse Code Signal</option>
-<option value="binary">8-Bit Binary Stream</option>
-<option value="shift">Cipher(+3)</option>
+<label for="mode" style="margin-top:12px">Target protocol</label> 
+<select id="mode"> 
+<option value="morse">Morse Code Signal</option> 
+<option value="binary">8-Bit Binary Stream</option> 
+<option value="shift">Caesar Cipher</option> 
 </select>
+
+<div id="shiftBox" style="display:none;margin-top:12px">
+<label for="shift">Shift key</label>
+<input id="shift" type="number" min="-25" max="25" value="3">
+</div>
 
 <section class="workspace">
 <div class="field">
@@ -72,9 +77,10 @@ id="modeLabel">MORSE</span></div>
 </div>
 </section>
 
-<div class="actions"> 
-<button id="copy">COPY SIGNAL</button> 
-<button id="clear">CLEAR BUFFER</button>     
+<div class="actions">  
+<button id="copy">COPY SIGNAL</button>  
+<button id="swap">↕ SWAP</button>
+<button id="clear">CLEAR BUFFER</button>      
 </div>
 
 <div class="notice">ZIPHUS//
@@ -83,45 +89,58 @@ Translation is processed locally in your browser. No data is sent to any server.
 </div>
 
 <script>
-    const MORSE={
-    A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',
+const MORSE={
+A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',
 I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',
 Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',
 Y:'-.--',Z:'--..',0:'-----',1:'.----',2:'..---',3:'...--',4:'....-',
 5:'.....',6:'-....',7:'--...',8:'---..',9:'----.',' ':'/'
 };
 
-const input=document.getElementById('input'),output=document.getElementById('output'),
-mode=document.getElementById('mode'),direction=document.getElementById('direction'),
-count=document.getElementById('count'),modeLabel=document.getElementById('modeLabel');
+const input=document.getElementById('input'),
+output=document.getElementById('output'),
+mode=document.getElementById('mode'),
+direction=document.getElementById('direction'),
+count=document.getElementById('count'),
+modeLabel=document.getElementById('modeLabel'),
+shiftBox=document.getElementById('shiftBox'),
+shift=document.getElementById('shift');
 
 function translate(){
-const text=input.value;let result='';
+const text=input.value;
+let result='';
 const decode=direction.value==='decode';
+const key=Math.max(-25,Math.min(25,parseInt(shift.value)||0));
 
 if(mode.value==='morse'){
-if(!decode) result=[...text.toUpperCase()].map(c=>MORSE[c]||c).join(' ');
-else result=text.trim().split(' ').map(c=>{
+if(!decode)
+result=[...text.toUpperCase()].map(c=>MORSE[c]||c).join(' ');
+else
+result=text.trim().split(/\s+/).map(c=>{
 if(c==='/')return ' ';
-let key=Object.keys(MORSE).find(k=>MORSE[k]===c);
-return key||c;
+let k=Object.keys(MORSE).find(k=>MORSE[k]===c);
+return k||c;
 }).join('');
 modeLabel.textContent=decode?'MORSE → TEXT':'TEXT → MORSE';
 }
 
 if(mode.value==='binary'){
-if(!decode) result=[...text].map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
-else result=text.trim().split(/\s+/).map(c=>String.fromCharCode(parseInt(c,2))).join('');
+if(!decode)
+result=[...text].map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
+else
+result=text.trim().split(/\s+/).map(c=>String.fromCharCode(parseInt(c,2))).join('');
 modeLabel.textContent=decode?'BINARY → TEXT':'TEXT → BINARY';
 }
 
 if(mode.value==='shift'){
 result=[...text].map(c=>{
-if(c>='A'&&c<='Z')return String.fromCharCode((c.charCodeAt(0)-65+(decode?-3:3)+26)%26+65);
-if(c>='a'&&c<='z')return String.fromCharCode((c.charCodeAt(0)-97+(decode?-3:3)+26)%26+97);
+if(c>='A'&&c<='Z')
+return String.fromCharCode((c.charCodeAt(0)-65+(decode?-key:key)+26)%26+65);
+if(c>='a'&&c<='z')
+return String.fromCharCode((c.charCodeAt(0)-97+(decode?-key:key)+26)%26+97);
 return c;
 }).join('');
-modeLabel.textContent=decode?'SHIFT-3 → TEXT':'TEXT → SHIFT+3';
+modeLabel.textContent=decode?'CIPHER-'+key+' → TEXT':'TEXT → CIPHER+'+key;
 }
 
 output.value=result;
@@ -129,8 +148,14 @@ count.textContent=text.length+' CH';
 }
 
 input.addEventListener('input',translate);
-mode.addEventListener('change',translate);
+
+mode.addEventListener('change',()=>{
+shiftBox.style.display=mode.value==='shift'?'block':'none';
+translate();
+});
+
 direction.addEventListener('change',translate);
+shift.addEventListener('input',translate);
 
 document.getElementById('copy').onclick=async()=>{
 if(!output.value)return;
@@ -138,6 +163,13 @@ await navigator.clipboard.writeText(output.value);
 const b=document.getElementById('copy');
 b.textContent='COPIED ✓';
 setTimeout(()=>b.textContent='COPY SIGNAL',1000);
+};
+
+document.getElementById('swap').onclick=()=>{
+if(!output.value)return;
+input.value=output.value;
+direction.value=direction.value==='encode'?'decode':'encode';
+translate();
 };
 
 document.getElementById('clear').onclick=()=>{
@@ -148,8 +180,5 @@ input.focus();
 };
 
 translate();
-
-
 </script>
-</body>
-</html>
+</script>
