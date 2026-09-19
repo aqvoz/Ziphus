@@ -2,183 +2,263 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" 
-    content="width=device-width, initial-scale=1.0">
-    <title>Ziphus//Translating Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ziphus // Translating Engine</title>
     <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-body{min-height:100vh;background:#0b0f0f;color:#b8c5bc;font-family:"Courier New",monospace;padding:24px;display:flex;align-items:center;justify-content:center}
-.app{width:100%;max-width:850px;border:1px solid #1d2420;background:#131714}
-.top{padding:18px 20px;border-bottom:1px solid #1b1f1c;display:flex;justify-content:space-between;align-items:end}
-h1{font-size:22px;letter-spacing:3px;color:#d8e2da}
-.sub{font-size:11px;color:#313b35;margin-top:5px}
-.status{font-size:10px;color:#212d27}.status span{color:#839a8b}
-.main{padding:20px}
-label{display:block;font-size:10px;color:#718077;letter-spacing:1px;margin-bottom:7px;text-transform:uppercase}
-select,textarea,button{width:100%;font:inherit;border:1px solid #343c37;background:#0b0e0c;color:#bfcac2;padding:10px;border-radius:0}
-select{cursor:pointer}
-textarea{height:180px;resize:vertical;line-height:1.5;outline:none}
-textarea:focus,select:focus{border-color:#212e26}
-.workspace{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}
-.field{min-width:0}
-.meta{display:flex;justify-content:space-between;margin-top:6px;font-size:9px;color:#566159}
-.actions{display:flex;gap:10px;margin-top:15px}
-button{cursor:pointer;color:#6c8575;transition:.15s}
-button:hover{background:#18201b;border-color:#536359;color:#e0e8e2}
-#copy{border-color:#2e3632}
-.notice{margin-top:12px;padding-top:10px;border-top:1px solid #252b27;font-size:10px;color:#4f5953}
-@media(max-width:650px){.workspace{grid-template-columns:1fr}textarea{height:140px}.top{align-items:flex-start;gap:10px}.status{display:none}}
-</style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{min-height:100vh;background:#0e1313;color:#b5c2b9;font-family:"Courier New",monospace;padding:24px;display:flex;align-items:center;justify-content:center}
+      .app{width:100%;max-width:850px;border:1px solid #1d2420;background:#131714}
+      .top{padding:18px 20px;border-bottom:1px solid #1b1f1c;display:flex;justify-content:space-between;align-items:flex-end}
+      h1{font-size:22px;letter-spacing:3px;color:#d8e2da}
+      .sub{font-size:11px;color:#313b35;margin-top:5px}
+      .status{font-size:10px;color:#212d27}.status span{color:#839a8b}
+      .main{padding:20px}
+      label{display:block;font-size:10px;color:#718077;letter-spacing:1px;margin-bottom:7px;text-transform:uppercase}
+      select,textarea,button,input[type="number"]{width:100%;font:inherit;border:1px solid #323a35;background:#0b0e0c;color:#bfcac2;padding:10px;border-radius:0}
+      select{cursor:pointer}
+      textarea{height:180px;resize:vertical;line-height:1.5;outline:none}
+      textarea:focus,select:focus,input:focus{border-color:#202c24}
+      .workspace{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}
+      .field{min-width:0}
+      .meta{display:flex;justify-content:space-between;margin-top:6px;font-size:9px;color:#566159}
+      .actions{display:flex;gap:10px;margin-top:15px}
+      button{cursor:pointer;color:#6c8575;transition:.15s}
+      button:hover{background:#18201b;border-color:#536359;color:#e0e8e2}
+      #copy{border-color:#2e3632}
+      .notice{margin-top:12px;padding-top:10px;border-top:1px solid #252b27;font-size:10px;color:#4f5953}
+      @media(max-width:650px){.workspace{grid-template-columns:1fr}textarea{height:140px}.top{align-items:flex-start;gap:10px}.status{display:none}}
+    </style>
 </head>
 <body>
- 
+
 <div class="app">
-<header class="top">
+  <header class="top">
     <div>
-        <h1>Ziphus_</h1>
-        <p class="sub">Signal Zipher Engine // Local processor</p>
+      <h1>Ziphus_</h1>
+      <p class="sub">Signal Zipher Engine // Local processor</p>
     </div>
     <div class="status">STATUS: <span>ONLINE</span></div>
-</header>
+  </header>
 
-<main class="main">
+  <main class="main">
+    <label for="direction">Direction</label>
+    <select id="direction">
+      <option value="encode">Encode</option>
+      <option value="decode">Decode</option>
+    </select>
 
-<label for="direction">Direction</label>
-<select id="direction">
-<option value="encode">Encode</option>
-<option value="decode">Decode</option>
-</select>
+    <label for="mode" style="margin-top:12px">Target protocol</label> 
+    <select id="mode"> 
+      <option value="morse">Morse Code Signal</option> 
+      <option value="binary">8-Bit Binary Stream</option> 
+      <option value="shift">Caesar Cipher</option> 
+    </select>
 
-<label for="mode" style="margin-top:12px">Target protocol</label> 
-<select id="mode"> 
-<option value="morse">Morse Code Signal</option> 
-<option value="binary">8-Bit Binary Stream</option> 
-<option value="shift">Caesar Cipher</option> 
-</select>
+    <div id="shiftBox" style="display:none;margin-top:12px">
+      <label for="shift">Shift key</label>
+      <input id="shift" type="number" min="-25" max="25" value="3">
+    </div>
 
-<div id="shiftBox" style="display:none;margin-top:12px">
-<label for="shift">Shift key</label>
-<input id="shift" type="number" min="-25" max="25" value="3">
-</div>
+    <section class="workspace">
+      <div class="field">
+        <label for="input">Input payload</label> 
+        <textarea id="input" placeholder="Enter text to process..."></textarea>
+        <div class="meta"><span>INPUT</span><span id="count">0 CH</span></div>
+      </div>
 
-<section class="workspace">
-<div class="field">
-<label for="input">Input payload</label>    
-<textarea id="input" placeholder="Enter your test to translate..."></textarea>
-<div class="meta"><span>INPUT</span><span id="count">0 CH</span></div>
-</div>
+      <div class="field">
+        <label for="output">Translated signal</label>
+        <textarea id="output" readonly placeholder="Output stream..."></textarea>
+        <div class="meta"><span>OUTPUT</span><span id="modeLabel">MORSE</span></div> 
+      </div>
+    </section>
 
-<div class="field">
-<label for="output">Translated signal</label>
-<textarea id="output" readonly placeholder="Output stream..."></textarea>
-<div class="meta">  
-<span>OUTPUT</span><span
-id="modeLabel">MORSE</span></div>    
-</div>
-</section>
+    <div class="actions"> 
+      <button id="copy">COPY SIGNAL</button> 
+      <button id="swap">↕ SWAP</button>
+      <button id="clear">CLEAR BUFFER</button> 
+    </div>
 
-<div class="actions">  
-<button id="copy">COPY SIGNAL</button>  
-<button id="swap">↕ SWAP</button>
-<button id="clear">CLEAR BUFFER</button>      
-</div>
-
-<div class="notice">ZIPHUS//
-Translation is processed locally in your browser. No data is sent to any server.</div>    
-</main>
+    <div class="notice">ZIPHUS // Translation is processed locally in your browser. No data is sent to any server.</div> 
+  </main>
 </div>
 
 <script>
-const MORSE={
-A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',
-I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',
-Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',
-Y:'-.--',Z:'--..',0:'-----',1:'.----',2:'..---',3:'...--',4:'....-',
-5:'.....',6:'-....',7:'--...',8:'---..',9:'----.',' ':'/'
-};
+  // Human-formatted dictionary table
+  const MORSE_DICTIONARY = [
+    ['A','.-'],['B','-...'],['C','-.-.'],['D','-..'],['E','.'],['F','..-.'],
+    ['G','--.'],['H','....'],['I','..'],['J','.---'],['K','-.-'],['L','.-..'],
+    ['M','--'],['N','-.'],['O','---'],['P','.--.'],['Q','--.-'],['R','.-.'],
+    ['S','...'],['T','-'],['U','..-'],['V','...-'],['W','.--'],['X','-..-'],
+    ['Y','-.--'],['Z','--..'],['0','-----'],['1','.----'],['2','..---'],
+    ['3','...--'],['4','....-'],['5','.....'],['6','-....'],['7','--...'],
+    ['8','---..'],['9','----.'],[' ','/']
+  ];
 
-const input=document.getElementById('input'),
-output=document.getElementById('output'),
-mode=document.getElementById('mode'),
-direction=document.getElementById('direction'),
-count=document.getElementById('count'),
-modeLabel=document.getElementById('modeLabel'),
-shiftBox=document.getElementById('shiftBox'),
-shift=document.getElementById('shift');
+  const input = document.getElementById('input');
+  const output = document.getElementById('output');
+  const mode = document.getElementById('mode');
+  const direction = document.getElementById('direction');
+  const count = document.getElementById('count');
+  const modeLabel = document.getElementById('modeLabel');
+  const shiftBox = document.getElementById('shiftBox');
+  const shift = document.getElementById('shift');
 
-function translate(){
-const text=input.value;
-let result='';
-const decode=direction.value==='decode';
-const key=Math.max(-25,Math.min(25,parseInt(shift.value)||0));
+  // Manual loop for Morse lookup
+  function characterToMorse(char) {
+    const uppercaseChar = char.toUpperCase();
+    for (let i = 0; i < MORSE_DICTIONARY.length; i++) {
+      if (MORSE_DICTIONARY[i][0] === uppercaseChar) {
+        return MORSE_DICTIONARY[i][1];
+      }
+    }
+    return char;
+  }
 
-if(mode.value==='morse'){
-if(!decode)
-result=[...text.toUpperCase()].map(c=>MORSE[c]||c).join(' ');
-else
-result=text.trim().split(/\s+/).map(c=>{
-if(c==='/')return ' ';
-let k=Object.keys(MORSE).find(k=>MORSE[k]===c);
-return k||c;
-}).join('');
-modeLabel.textContent=decode?'MORSE → TEXT':'TEXT → MORSE';
-}
+  // Manual loop for reverse Morse lookup
+  function morseToCharacter(code) {
+    if (code === '/') return ' ';
+    for (let i = 0; i < MORSE_DICTIONARY.length; i++) {
+      if (MORSE_DICTIONARY[i][1] === code) {
+        return MORSE_DICTIONARY[i][0];
+      }
+    }
+    return code;
+  }
 
-if(mode.value==='binary'){
-if(!decode)
-result=[...text].map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
-else
-result=text.trim().split(/\s+/).map(c=>String.fromCharCode(parseInt(c,2))).join('');
-modeLabel.textContent=decode?'BINARY → TEXT':'TEXT → BINARY';
-}
+  // Main translation function using standard imperative loops
+  function processSignal() {
+    const text = input.value;
+    const isDecode = direction.value === 'decode';
+    let shiftOffset = parseInt(shift.value);
+    
+    if (isNaN(shiftOffset)) shiftOffset = 0;
+    if (shiftOffset < -25) shiftOffset = -25;
+    if (shiftOffset > 25) shiftOffset = 25;
 
-if(mode.value==='shift'){
-result=[...text].map(c=>{
-if(c>='A'&&c<='Z')
-return String.fromCharCode((c.charCodeAt(0)-65+(decode?-key:key)+26)%26+65);
-if(c>='a'&&c<='z')
-return String.fromCharCode((c.charCodeAt(0)-97+(decode?-key:key)+26)%26+97);
-return c;
-}).join('');
-modeLabel.textContent=decode?'CIPHER-'+key+' → TEXT':'TEXT → CIPHER+'+key;
-}
+    let result = '';
 
-output.value=result;
-count.textContent=text.length+' CH';
-}
+    // 1. Morse Code Processing
+    if (mode.value === 'morse') {
+      if (!isDecode) {
+        let morseTokens = [];
+        for (let i = 0; i < text.length; i++) {
+          morseTokens.push(characterToMorse(text[i]));
+        }
+        result = morseTokens.join(' ');
+      } else {
+        const rawTokens = text.trim().split(/\s+/);
+        let textChars = [];
+        for (let i = 0; i < rawTokens.length; i++) {
+          if (rawTokens[i].length > 0) {
+            textChars.push(morseToCharacter(rawTokens[i]));
+          }
+        }
+        result = textChars.join('');
+      }
+      modeLabel.textContent = isDecode ? 'MORSE → TEXT' : 'TEXT → MORSE';
+    }
 
-input.addEventListener('input',translate);
+    // 2. Binary Stream Processing
+    else if (mode.value === 'binary') {
+      if (!isDecode) {
+        let binaryBytes = [];
+        for (let i = 0; i < text.length; i++) {
+          let byteString = text.charCodeAt(i).toString(2);
+          while (byteString.length < 8) {
+            byteString = '0' + byteString;
+          }
+          binaryBytes.push(byteString);
+        }
+        result = binaryBytes.join(' ');
+      } else {
+        const bytes = text.trim().split(/\s+/);
+        let decodedChars = [];
+        for (let i = 0; i < bytes.length; i++) {
+          if (bytes[i].length > 0) {
+            let decimalVal = parseInt(bytes[i], 2);
+            if (!isNaN(decimalVal)) {
+              decodedChars.push(String.fromCharCode(decimalVal));
+            }
+          }
+        }
+        result = decodedChars.join('');
+      }
+      modeLabel.textContent = isDecode ? 'BINARY → TEXT' : 'TEXT → BINARY';
+    }
 
-mode.addEventListener('change',()=>{
-shiftBox.style.display=mode.value==='shift'?'block':'none';
-translate();
-});
+    // 3. Caesar Shift Processing
+    else if (mode.value === 'shift') {
+      let activeKey = isDecode ? -shiftOffset : shiftOffset;
+      let shiftedCharacters = [];
 
-direction.addEventListener('change',translate);
-shift.addEventListener('input',translate);
+      for (let i = 0; i < text.length; i++) {
+        let asciiCode = text.charCodeAt(i);
 
-document.getElementById('copy').onclick=async()=>{
-if(!output.value)return;
-await navigator.clipboard.writeText(output.value);
-const b=document.getElementById('copy');
-b.textContent='COPIED ✓';
-setTimeout(()=>b.textContent='COPY SIGNAL',1000);
-};
+        // Uppercase A-Z
+        if (asciiCode >= 65 && asciiCode <= 90) {
+          let shiftedCode = ((asciiCode - 65 + activeKey) % 26 + 26) % 26 + 65;
+          shiftedCharacters.push(String.fromCharCode(shiftedCode));
+        } 
+        // Lowercase a-z
+        else if (asciiCode >= 97 && asciiCode <= 122) {
+          let shiftedCode = ((asciiCode - 97 + activeKey) % 26 + 26) % 26 + 97;
+          shiftedCharacters.push(String.fromCharCode(shiftedCode));
+        } 
+        // Punctuation / Spaces
+        else {
+          shiftedCharacters.push(text[i]);
+        }
+      }
 
-document.getElementById('swap').onclick=()=>{
-if(!output.value)return;
-input.value=output.value;
-direction.value=direction.value==='encode'?'decode':'encode';
-translate();
-};
+      result = shiftedCharacters.join('');
+      modeLabel.textContent = isDecode ? 'CIPHER-' + shiftOffset + ' → TEXT' : 'TEXT → CIPHER+' + shiftOffset;
+    }
 
-document.getElementById('clear').onclick=()=>{
-input.value='';
-output.value='';
-translate();
-input.focus();
-};
+    output.value = result;
+    count.textContent = text.length + ' CH';
+  }
 
-translate();
+  // Event Handlers
+  input.addEventListener('input', processSignal);
+  direction.addEventListener('change', processSignal);
+  shift.addEventListener('input', processSignal);
+
+  mode.addEventListener('change', function() {
+    if (mode.value === 'shift') {
+      shiftBox.style.display = 'block';
+    } else {
+      shiftBox.style.display = 'none';
+    }
+    processSignal();
+  });
+
+  document.getElementById('copy').onclick = async function() {
+    if (!output.value) return;
+    await navigator.clipboard.writeText(output.value);
+    const btn = document.getElementById('copy');
+    btn.textContent = 'COPIED ✓';
+    setTimeout(function() {
+      btn.textContent = 'COPY SIGNAL';
+    }, 1000);
+  };
+
+  document.getElementById('swap').onclick = function() {
+    if (!output.value) return;
+    input.value = output.value;
+    direction.value = (direction.value === 'encode') ? 'decode' : 'encode';
+    processSignal();
+  };
+
+  document.getElementById('clear').onclick = function() {
+    input.value = '';
+    output.value = '';
+    processSignal();
+    input.focus();
+  };
+
+  // Initial execution
+  processSignal();
 </script>
-</script>
+</body>
+</html>
