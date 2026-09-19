@@ -7,26 +7,26 @@
     <title>Ziphus//Translating Engine</title>
     <style>
     *{box-sizing:border-box;margin:0;padding:0}
-body{min-height:100vh;background:#1a2025;color:#b8c5bc;font-family:"Courier New",monospace;padding:24px;display:flex;align-items:center;justify-content:center}
-.app{width:100%;max-width:850px;border:1px solid #29312c;background:#101311}
+body{min-height:100vh;background:#0b0f0f;color:#b8c5bc;font-family:"Courier New",monospace;padding:24px;display:flex;align-items:center;justify-content:center}
+.app{width:100%;max-width:850px;border:1px solid #1d2420;background:#131714}
 .top{padding:18px 20px;border-bottom:1px solid #1b1f1c;display:flex;justify-content:space-between;align-items:end}
 h1{font-size:22px;letter-spacing:3px;color:#d8e2da}
-.sub{font-size:11px;color:#3d4841;margin-top:5px}
-.status{font-size:10px;color:#27362e}.status span{color:#839a8b}
+.sub{font-size:11px;color:#313b35;margin-top:5px}
+.status{font-size:10px;color:#212d27}.status span{color:#839a8b}
 .main{padding:20px}
 label{display:block;font-size:10px;color:#718077;letter-spacing:1px;margin-bottom:7px;text-transform:uppercase}
 select,textarea,button{width:100%;font:inherit;border:1px solid #343c37;background:#0b0e0c;color:#bfcac2;padding:10px;border-radius:0}
 select{cursor:pointer}
 textarea{height:180px;resize:vertical;line-height:1.5;outline:none}
-textarea:focus,select:focus{border-color:#27372d}
+textarea:focus,select:focus{border-color:#212e26}
 .workspace{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}
 .field{min-width:0}
 .meta{display:flex;justify-content:space-between;margin-top:6px;font-size:9px;color:#566159}
 .actions{display:flex;gap:10px;margin-top:15px}
 button{cursor:pointer;color:#6c8575;transition:.15s}
 button:hover{background:#18201b;border-color:#536359;color:#e0e8e2}
-#copy{border-color:#2c3733}
-.notice{margin-top:12px;padding-top:10px;border-top:1px solid #252b27;font-size:10px;color:#59645d}
+#copy{border-color:#2e3632}
+.notice{margin-top:12px;padding-top:10px;border-top:1px solid #252b27;font-size:10px;color:#4f5953}
 @media(max-width:650px){.workspace{grid-template-columns:1fr}textarea{height:140px}.top{align-items:flex-start;gap:10px}.status{display:none}}
 </style>
 </head>
@@ -35,11 +35,13 @@ button:hover{background:#18201b;border-color:#536359;color:#e0e8e2}
 <div class="app">
 <header class="top">
     <div>
-        <h1>Ziphus</h1>
+        <h1>Ziphus_</h1>
         <p class="sub">Signal Zipher Engine // Local processor</p>
     </div>
     <div class="status">STATUS: <span>ONLINE</span></div>
 </header>
+
+<main class="main">
 
 <label for="direction">Direction</label>
 <select id="direction">
