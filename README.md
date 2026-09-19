@@ -15,6 +15,4 @@ Open the live demo link above to launch the terminal interface immediately in yo
 * **Live Processing:** Updates translation, output mode tags, and character counts instantly on input.
 * **Clipboard Integration:** One-click signal copying with visual confirmation feedback.
 
-## How to Run It Locally
-1. Clone this repository:
-   
+
