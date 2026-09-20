@@ -3,7 +3,9 @@
 
 ## What it can do
 -**Morse code:**Converts text into morse code siginals and back
--**8 Bit binary:**Encodes text into 8 bit binary streams and back   
+
+-**8 Bit binary:**Encodes text into 8 bit binary streams and back 
+
 -**Ceasar Cipher:**configurable shift cipher where u can set your own shift decode or encode
 
 ## Built with
