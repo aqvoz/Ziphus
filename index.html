@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZIPHUS_</title>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZIPHUS_</title>
+  <style>
   * { box-sizing: border-box; margin:0; padding: 0; }
 
 body {
-background-color: #0b0f0e;
-color: #92a397;
-font-family: monospace;
+ background-color: #0b0f0e;
+  color: #92a397;
+ font-family: monospace;
  padding: 20px 10px;
 }
 
@@ -63,10 +63,10 @@ select, textarea, input[type=number]  {
   .box-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-   }
+     }
  }
 
-.box-col { display: flex; flex-direction: column; }
+   .box-col { display: flex; flex-direction: column; }
 
 .info-bar{
 display: flex;
@@ -74,18 +74,18 @@ justify-content: space-between;
 font-size: 9px;
 color: #435248;
 margin-top: 5px;
-}
+   }
 
 .btn-group {
   margin-top: 15px;
   display: flex;
   gap: 10px;
-}
+  }
 
 button {
  background: #111714;
 border: 1px solid #28362d;
-color: #7b9484;
+ color: #7b9484;
 padding: 10px;
 cursor: pointer;
 flex: 1;
@@ -102,9 +102,9 @@ button:hover { background: #1c2620; color: #d2ded5; }
 
 <div class="app-container">
   <header>
-    <h1>ZIPHUS_</h1>
-    <span class="sub-text">Signal Zipher Engine v0.9-beta</span>
-   </header>
+     <h1>ZIPHUS_</h1>
+     <span class="sub-text">Signal Zipher Engine v0.9-beta</span>
+    </header>
 
   <div class="controls-row">
     <label>Direction</label>
@@ -132,7 +132,7 @@ button:hover { background: #1c2620; color: #d2ded5; }
         <div class="box-col">
       <label>Input payload</label>
       <textarea id="rawInput" placeholder="Type or paste payload here..."></textarea>
-      <div class="info-bar">
+       <div class="info-bar">
         <span>INPUT</span>
         <span id="charCounter">0 CH</span>
       </div>
@@ -150,7 +150,7 @@ button:hover { background: #1c2620; color: #d2ded5; }
 
   <div class="btn-group">
       <button id="copyBtn" type="button">COPY SIGNAL</button>
-       <button id="swapBtn" type="button">↕ SWAP</button>
+        <button id="swapBtn" type="button">↕ SWAP</button>
       <button id="resetBtn" type="button">CLEAR ALL</button>
   </div>
 
