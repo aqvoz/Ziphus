@@ -1,338 +1,304 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
 <head>
-    <meta charset=UTF-8>
-    <meta name=viewport content=width=device-width, initial-scale=1.0>
-    <title>Ziphus Terminal v1.2</title>
-    
-    <style>
-      * {box-sizing:border-box;margin:0;padding:0}
-      
-      body{
-        min-height: 100vh;
-        background: #0e1313;
-        color: #b5c2b9;
-        font-family: Courier New, monospace;
-        padding: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      .app{
-        width: 100%;
-        max-width: 850px;
-        border: 1px solid #233028;
-        background: #090c0c;
-      }
-      
-      .top{
-        padding: 18px 20px;
-        border-bottom: 1px solid #233028;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      
-      h1{font-size: 22px; letter-spacing: 3px; color: #d8e2da;}
-      .sub{font-size: 11px; color: #4d5e53; margin-top: 5px;}
-      .status{font-size: 10px; color: #212d27;}
-      .status span{color: #839a8b;}
-      
-      .main{padding: 20px;}
-      
-      label{
-        display: block;
-        font-size: 10px;
-        color: #718077;
-        letter-spacing: 1px;
-        margin-bottom: 7px;
-        text-transform: uppercase;
-      }
-      
-      select, textarea, button, input[type=number] {
-        width: 100%;
-        font: inherit;
-        border: 1px solid #233028;
-        background: #0e1313;
-        color: #b5c2b9;
-        padding: 10px;
-      }
-      
-      select{cursor: pointer;}
-      textarea{height: 180px; resize: vertical; line-height: 1.5; outline: none;}
-      textarea:focus, select:focus, input:focus{border-color: #455c4e;}
-      
-      .workspace{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-top: 15px;
-      }
-      
-      .field{min-width: 0;}
-      
-      .meta{
-        display: flex;
-        justify-content: space-between;
-        margin-top: 6px;
-        font-size: 9px;
-        color: #566159;
-      }
-      
-      .actions{display: flex; gap: 10px; margin-top: 15px;}
-      
-      button{
-        cursor: pointer;
-        color: #6c8575;
-        transition: .15s;
-        font-weight: bold;
-      }
-      button:hover{background: #18201b; border-color: #536359; color: #e0e8e2;}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZIPHUS_</title>
+<style>
+* { box-sizing: border-box; margin:0; padding: 0; }
 
-      .notice{
-        margin-top: 15px;
-        padding-top: 10px;
-        border-top: 1px solid #233028;
-        font-size: 9px;
-        color: #3f4d44;
-        text-align: center;
-      }
-      
-      @media(max-width: 650px) {
-        .workspace{grid-template-columns: 1fr;}
-        textarea{height: 140px;}
-        .top{align-items: flex-start; gap: 10px;}
-        .status{display: none;}
-      }
-    </style>
+body {
+  background-color: #0b0f0e;
+  color: #92a397;
+  font-family: monospace;
+  padding: 20px 10px;
+}
+
+.app-container{
+  max-width: 820px;
+  margin: 10px auto;
+  border: 1px solid #1c2620;
+  background:#060808;
+  padding: 18px;
+}
+
+header {
+  border-bottom: 1px solid #202c25;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+h1{ font-size: 22px; color: #c0cec4; letter-spacing: 2px; }
+.sub-text { font-size: 11px; color: #3b4740; }
+
+.controls-row{ margin-bottom: 14px; }
+
+label{
+  font-size: 10px;
+  color: #5d6e63;
+  display: block;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+select, textarea, input[type=number] {
+  background: #0d1210;
+  border: 1px solid #1a241e;
+  color: #a4b5aa;
+  padding: 9px;
+  width: 100%;
+  font-family: inherit;
+}
+
+textarea { height: 170px; resize: vertical; line-height: 1.4; }
+
+.box-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (min-width: 620px) {
+  .box-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.box-col { display: flex; flex-direction: column; }
+
+.info-bar{
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #435248;
+  margin-top: 5px;
+}
+
+.btn-group {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  background: #111714;
+  border: 1px solid #28362d;
+  color: #7b9484;
+  padding: 10px;
+  cursor: pointer;
+  flex: 1;
+  font-family: inherit;
+  font-size: 11px;
+}
+
+button:hover { background: #1c2620; color: #d2ded5; }
+.footer-note { font-size: 9px; color: #2b362f; margin-top: 18px; text-align: center; }
+</style>
 </head>
+
 <body>
 
-<div class=app>
-  <header class=top>
-    <div>
-      <h1>ZIPHUS_</h1>
-      <p class=sub>Signal Zipher Engine v0.9-beta</p>
-    </div>
-    <div class=status>SYS_STATUS: <span>ONLINE</span></div>
+<div class="app-container">
+  <header>
+    <h1>ZIPHUS_</h1>
+    <span class="sub-text">Signal Zipher Engine v0.9-beta</span>
   </header>
 
-  <main class=main>
-    <label for=direction>Direction</label>
-    <select id=direction>
-      <option value=encode>Encode (Plain -> Signal)</option>
-      <option value=decode>Decode (Signal -> Plain)</option>
+  <div class="controls-row">
+    <label>Direction</label>
+    <select id="dirSelect">
+      <option value="encode">Encode</option>
+      <option value="decode">Decode</option>
     </select>
+  </div>
 
-    <label for=mode style=margin-top: 12px;>Target protocol</label>
-    <select id=mode>
-      <option value=morse>Morse Code Signal</option>
-      <option value=binary>8-Bit Binary Stream</option>
-      <option value=shift>Caesar Cipher (ROT)</option>
+  <div class="controls-row">
+    <label>Target protocol</label>
+    <select id="protocolSelect">
+      <option value="morse">Morse Code Signal</option>
+      <option value="binary">8-Bit Binary Stream</option>
+      <option value="caesar">Caesar Cipher</option>
     </select>
+  </div>
 
-    <div id=shiftBox style=display: none; margin-top: 12px;>
-      <label for=shift>Shift key offset</label>
-      <input id=shift type=number min=-25 max=25 value=3>
+  <div class="controls-row" id="caesarOptions" style="display:none;">
+    <label>Shift key offset</label>
+    <input type="number" id="shiftVal" value="3" min="-25" max="25">
+  </div>
+
+  <div class="box-grid">
+    <div class="box-col">
+      <label>Input payload</label>
+      <textarea id="rawInput" placeholder="Type or paste payload here..."></textarea>
+      <div class="info-bar">
+        <span>INPUT</span>
+        <span id="charCounter">0 CH</span>
+      </div>
     </div>
 
-    <section class=workspace>
-      <div class=field>
-        <label for=input>Input payload</label>
-        <textarea id=input placeholder=Type or paste payload here...></textarea>
-        <div class=meta><span>INPUT BUFFER</span><span id=count>0 CH</span></div>
+    <div class="box-col">
+      <label>Translated signal</label>
+      <textarea id="rawOutput" readonly placeholder="Waiting for data stream..."></textarea>
+      <div class="info-bar">
+        <span>OUTPUT STREAM</span>
+        <span id="statusLabel">MORSE</span>
       </div>
-
-      <div class=field>
-        <label for=output>Translated signal</label>
-        <textarea id=output readonly placeholder=Waiting for data stream...></textarea>
-        <div class=meta><span>OUTPUT STREAM</span><span id=modeLabel>MORSE</span></div>
-      </div>
-    </section>
-
-    <div class=actions>
-      <button id=copy>COPY SIGNAL</button>
-      <button id=swap>↕ SWAP BUFFERS</button>
-      <button id=clear>CLEAR ALL</button>
     </div>
+  </div>
 
-    <div class=notice>ZIPHUS PROTOCOL // SECURE CHANNEL // ENCRYPTION OFFLINE</div>
-  </main>
+  <div class="btn-group">
+    <button id="copyBtn" type="button">COPY SIGNAL</button>
+    <button id="swapBtn" type="button">↕ SWAP</button>
+    <button id="resetBtn" type="button">CLEAR ALL</button>
+  </div>
+
+  <div class="footer-note">ZIPHUS PROTOCOL // SECURE // ENCRYPTION OFFLINE</div>
 </div>
 
 <script>
-  const MORSE_DICTIONARY = [
-    ['A', '.-'], ['B', '-...'], ['C', '-.-.'], ['D', '-..'], ['E', '.'], ['F', '..-.'],
-    ['G', '--.'], ['H', '....'], ['I', '..'], ['J', '.---'], ['K', '-.-'], ['L', '.-..'],
-    ['M', '--'], ['N', '-.'], ['O', '---'], ['P', '.--.'], ['Q', '--.-'], ['R', '.-.'],
-    ['S', '...'], ['T', '-'], ['U', '..-'], ['V', '...-'], ['W', '.--'], ['X', '-..-'],
-    ['Y', '-.--'], ['Z', '--..'], ['0', '-----'], ['1', '.----'], ['2', '..---'],
-    ['3', '...--'], ['4', '....-'], ['5', '.....'], ['6', '-....'], ['7', '--...'],
-    ['8', '---..'], ['9', '----.'], [' ', '/']
-  ];
+var MORSE_MAP = {
+  'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+  'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+  'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+  'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+  'Y': '-.--', 'Z': '--..', '0': '-----', '1': '.----', '2': '..---',
+  '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...',
+  '8': '---..', '9': '----.', ' ': '/'
+};
 
-  const input = document.getElementById('input');
-  const output = document.getElementById('output');
-  const mode = document.getElementById('mode');
-  const direction = document.getElementById('direction');
-  const count = document.getElementById('count');
-  const modeLabel = document.getElementById('modeLabel');
-  const shiftBox = document.getElementById('shiftBox');
-  const shift = document.getElementById('shift');
+function getCharFromMorse(code) {
+  if (code === '/') return ' ';
+  for (var k in MORSE_MAP) {
+    if (MORSE_MAP[k] === code) return k;
+  }
+  return code;
+}
 
-  function charToMorse(char) {
-    const up = char.toUpperCase();
-    for (let i = 0; i < MORSE_DICTIONARY.length; i++) {
-      if (MORSE_DICTIONARY[i][0] === up) {
-        return MORSE_DICTIONARY[i][1];
-      }
-    }
-    return char;
+var inEl = document.getElementById('rawInput');
+var outEl = document.getElementById('rawOutput');
+var dirEl = document.getElementById('dirSelect');
+var protoEl = document.getElementById('protocolSelect');
+var shiftBox = document.getElementById('caesarOptions');
+var shiftInput = document.getElementById('shiftVal');
+var counter = document.getElementById('charCounter');
+var labelOut = document.getElementById('statusLabel');
+
+console.log("ZIPHUS System Online.");
+
+function runTranslation() {
+  var str = inEl.value;
+  var isDecoding = dirEl.value === 'decode';
+  var outputText = '';
+  
+  if (protoEl.value === 'caesar') {
+    shiftBox.style.display = 'block';
+  } else {
+    shiftBox.style.display = 'none';
   }
 
-  function morseToChar(code) {
-    if (code === '/') return ' ';
-    for (let i = 0; i < MORSE_DICTIONARY.length; i++) {
-      if (MORSE_DICTIONARY[i][1] === code) {
-        return MORSE_DICTIONARY[i][0];
+  if (protoEl.value === 'morse') {
+    if (!isDecoding) {
+      var morseArr = [];
+      var upperStr = str.toUpperCase();
+      for (var a = 0; a < upperStr.length; a++) {
+        var ch = upperStr[a];
+        morseArr.push(MORSE_MAP[ch] ? MORSE_MAP[ch] : ch);
       }
-    }
-    return code;
-  }
-
-  function processSignal() {
-    const text = input.value;
-    const isDecode = direction.value === 'decode';
-    
-    let offset = parseInt(shift.value);
-    if (isNaN(offset)) offset = 0;
-    if (offset < -25) offset = -25;
-    if (offset > 25) offset = 25;
-
-    let res = '';
-
-    if (mode.value === 'morse') {
-      if (!isDecode) {
-        let tokens = [];
-        for (let i = 0; i < text.length; i++) {
-          tokens.push(charToMorse(text[i]));
-        }
-        res = tokens.join(' ');
-      } else {
-        const raw = text.trim().split(/\s+/);
-        let chars = [];
-        for (let i = 0; i < raw.length; i++) {
-          if (raw[i].length > 0) {
-            chars.push(morseToChar(raw[i]));
-          }
-        }
-        res = chars.join('');
-      }
-      modeLabel.textContent = isDecode ? 'MORSE -> TEXT' : 'TEXT -> MORSE';
-    }
-
-    else if (mode.value === 'binary') {
-      if (!isDecode) {
-        let bytes = [];
-        for (let i = 0; i < text.length; i++) {
-          let bStr = text.charCodeAt(i).toString(2);
-          while (bStr.length < 8) {
-            bStr = '0' + bStr;
-          }
-          bytes.push(bStr);
-        }
-        res = bytes.join(' ');
-      } else {
-        const binChunks = text.trim().split(/\s+/);
-        let decoded = [];
-        for (let i = 0; i < binChunks.length; i++) {
-          if (binChunks[i].length > 0) {
-            let dec = parseInt(binChunks[i], 2);
-            if (!isNaN(dec)) {
-              decoded.push(String.fromCharCode(dec));
-            }
-          }
-        }
-        res = decoded.join('');
-      }
-      modeLabel.textContent = isDecode ? 'BINARY -> TEXT' : 'TEXT -> BINARY';
-    }
-
-    else if (mode.value === 'shift') {
-      let key = isDecode ? -offset : offset;
-      let shiftedArr = [];
-
-      for (let i = 0; i < text.length; i++) {
-        let code = text.charCodeAt(i);
-
-        if (code >= 65 && code <= 90) {
-          let shiftedCode = ((code - 65 + key) % 26 + 26) % 26 + 65;
-          shiftedArr.push(String.fromCharCode(shiftedCode));
-        }
-        else if (code >= 97 && code <= 122) {
-          let shiftedCode = ((code - 97 + key) % 26 + 26) % 26 + 97;
-          shiftedArr.push(String.fromCharCode(shiftedCode));
-        } 
-        else {
-          shiftedArr.push(text[i]);
-        }
-      }
-
-      res = shiftedArr.join('');
-      modeLabel.textContent = isDecode ? `CIPHER-${offset} -> TEXT` : `TEXT -> CIPHER+${offset}`;
-    }
-
-    output.value = res;
-    count.textContent = text.length + ' CH';
-  }
-
-  input.addEventListener('input', processSignal);
-  direction.addEventListener('change', processSignal);
-  shift.addEventListener('input', processSignal);
-
-  mode.addEventListener('change', function() {
-    if (mode.value === 'shift') {
-      shiftBox.style.display = 'block';
+      outputText = morseArr.join(' ');
     } else {
-      shiftBox.style.display = 'none';
+      var chunks = str.trim().split(/\s+/);
+      var textArr = [];
+      for (var b = 0; b < chunks.length; b++) {
+        if (chunks[b] !== '') {
+          textArr.push(getCharFromMorse(chunks[b]));
+        }
+      }
+      outputText = textArr.join('');
     }
-    processSignal();
-  });
-
-  document.getElementById('copy').onclick = async function() {
-    if (!output.value) return;
-    try {
-      await navigator.clipboard.writeText(output.value);
-      const btn = document.getElementById('copy');
-      const oldText = btn.textContent;
-      btn.textContent = 'COPIED SUCCESSFULLY ✓';
-      setTimeout(function() {
-        btn.textContent = oldText;
-      }, 1200);
-    } catch(err) {
-      console.log('Failed to copy text: ', err);
+    labelOut.textContent = isDecoding ? 'MORSE -> TEXT' : 'TEXT -> MORSE';
+  }
+  else if (protoEl.value === 'binary') {
+    if (!isDecoding) {
+      var binList = [];
+      for (var c = 0; c < str.length; c++) {
+        var binVal = str.charCodeAt(c).toString(2);
+        while (binVal.length < 8) binVal = '0' + binVal;
+        binList.push(binVal);
+      }
+      outputText = binList.join(' ');
+    } else {
+      var binWords = str.trim().split(/\s+/);
+      var decodedChars = [];
+      for (var d = 0; d < binWords.length; d++) {
+        if (binWords[d] !== '') {
+          var parsedNum = parseInt(binWords[d], 2);
+          if (!isNaN(parsedNum)) decodedChars.push(String.fromCharCode(parsedNum));
+        }
+      }
+      outputText = decodedChars.join('');
     }
-  };
-
-  document.getElementById('swap').onclick = function() {
-    if (!output.value) return;
-    let temp = input.value;
-    input.value = output.value;
-    output.value = temp;
+    labelOut.textContent = isDecoding ? 'BINARY -> TEXT' : 'TEXT -> BINARY';
+  }
+  else if (protoEl.value === 'caesar') {
+    var shiftNum = parseInt(shiftInput.value);
+    if (isNaN(shiftNum)) shiftNum = 0;
+    if (shiftNum > 25) shiftNum = 25;
+    if (shiftNum < -25) shiftNum = -25;
     
-    direction.value = (direction.value === 'encode') ? 'decode' : 'encode';
-    processSignal();
-  };
+    var actualShift = isDecoding ? -shiftNum : shiftNum;
+    var resStr = '';
 
-  document.getElementById('clear').onclick = function() {
-    input.value = '';
-    output.value = '';
-    processSignal();
-    input.focus();
-  };
+    for (var e = 0; e < str.length; e++) {
+      var charCode = str.charCodeAt(e);
+      if (charCode >= 65 && charCode <= 90) {
+        var shifted = ((charCode - 65 + actualShift) % 26 + 26) % 26 + 65;
+        resStr += String.fromCharCode(shifted);
+      } else if (charCode >= 97 && charCode <= 122) {
+        var shifted = ((charCode - 97 + actualShift) % 26 + 26) % 26 + 97;
+        resStr += String.fromCharCode(shifted);
+      } else {
+        resStr += str[e];
+      }
+    }
+    outputText = resStr;
+    labelOut.textContent = isDecoding ? ('CIPHER-' + shiftNum + ' -> TEXT') : ('TEXT -> CIPHER+' + shiftNum);
+  }
 
-  processSignal();
+  outEl.value = outputText;
+  counter.textContent = str.length + ' CH';
+}
+
+inEl.oninput = runTranslation;
+dirEl.onchange = runTranslation;
+protoEl.onchange = runTranslation;
+shiftInput.oninput = runTranslation;
+
+document.getElementById('copyBtn').onclick = function() {
+  if (!outEl.value) return;
+  navigator.clipboard.writeText(outEl.value);
+  var btn = this;
+  var oldTxt = btn.textContent;
+  btn.textContent = 'COPIED ✓';
+  setTimeout(function() { btn.textContent = oldTxt; }, 1000);
+};
+
+document.getElementById('swapBtn').onclick = function() {
+  if (!outEl.value) return;
+  inEl.value = outEl.value;
+  dirEl.value = (dirEl.value === 'encode') ? 'decode' : 'encode';
+  runTranslation();
+};
+
+document.getElementById('resetBtn').onclick = function() {
+  inEl.value = '';
+  outEl.value = '';
+  runTranslation();
+  inEl.focus();
+};
+
+runTranslation();
 </script>
 </body>
 </html>
