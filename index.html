@@ -34,7 +34,7 @@ body{
   padding:18px 20px;
   border-bottom:1px solid #233028;
   display:flex;
-   justify-content:space-between;
+  justify-content:space-between;
   align-items:center;
 }
 
@@ -47,7 +47,7 @@ h1{
 .sub{
   font-size:11px;
   color:#4d5e53;
-   margin-top:5px;
+  margin-top:5px;
 }
 
 .status{
@@ -66,7 +66,7 @@ h1{
 label{
   display:block;
   font-size:10px;
-   color:#718077;
+  color:#718077;
   letter-spacing:1px;
   margin-bottom:7px;
   text-transform:uppercase;
@@ -75,13 +75,14 @@ label{
 select,
 textarea,
 button,
-input[type=number]{
+input[type=number],
+input[type=text]{
   width:100%;
   font:inherit;
   border:1px solid #233028;
   background:#0e1313;
   color:#b5c2b9;
-   padding:10px;
+  padding:10px;
 }
 
 select{
@@ -105,7 +106,7 @@ input:focus{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
-   margin-top:15px;
+  margin-top:15px;
 }
 
 .field{
@@ -175,20 +176,20 @@ button:hover{
 
   <header class="top">
     <div>
-       <h1>ZIPHUS_</h1>
-      <p class="sub">Signal Engine -</p>
+      <h1>ZIPHUS_</h1>
+      <p class="sub">Signal Zipher Engine v0.9-beta</p>
     </div>
 
     <div class="status">
-         SYS_STATUS: <span>ONLINE</span>
-      </div>
+      SYS_STATUS: <span>ONLINE</span>
+    </div>
   </header>
 
   <main class="main">
 
     <label for="direction">Direction</label>
     <select id="direction">
-       <option value="encode">Encode</option>
+      <option value="encode">Encode</option>
       <option value="decode">Decode</option>
     </select>
 
@@ -196,22 +197,29 @@ button:hover{
     <select id="mode">
       <option value="morse">Morse Code Signal</option>
       <option value="binary">8-Bit Binary Stream</option>
-       <option value="shift">Caesar Cipher</option>
+      <option value="shift">Caesar Cipher</option>
+      <option value="atbash">Atbash Cipher</option>
+      <option value="vigenere">Vigenere Cipher</option>
     </select>
 
     <div id="shiftBox" style="display:none;margin-top:12px;">
       <label for="shift">Shift key offset</label>
-         <input id="shift" type="number" min="-25" max="25" value="3">
+      <input id="shift" type="number" min="-25" max="25" value="3">
     </div>
 
-     <section class="workspace">
+    <div id="keyBox" style="display:none;margin-top:12px;">
+      <label for="key">Vigenere key</label>
+      <input id="key" type="text" placeholder="Enter a key">
+    </div>
+
+    <section class="workspace">
 
       <div class="field">
         <label for="input">Input payload</label>
-         <textarea
+        <textarea
           id="input"
           placeholder="Type or paste payload here..."
-         ></textarea>
+        ></textarea>
 
         <div class="meta">
           <span>INPUT</span>
@@ -221,12 +229,12 @@ button:hover{
 
       <div class="field">
         <label for="output">Translated signal</label>
-         <textarea
+        <textarea
           id="output"
           readonly
-           placeholder="Waiting for data stream..."
+          placeholder="Waiting for data stream..."
         ></textarea>
- 
+
         <div class="meta">
           <span>OUTPUT STREAM</span>
           <span id="modeLabel">MORSE</span>
@@ -237,15 +245,15 @@ button:hover{
 
     <div class="actions">
       <button id="copy">COPY SIGNAL</button>
-        <button id="swap">↕ SWAP</button>
-       <button id="clear">CLEAR ALL</button>
+      <button id="swap">↕ SWAP</button>
+      <button id="clear">CLEAR ALL</button>
     </div>
 
     <div class="notice">
-      ZIPHUS PROTOCOL // SECURE // ENCRYPTION 
+      ZIPHUS PROTOCOL // SECURE // ENCRYPTION OFFLINE
     </div>
 
-   </main>
+  </main>
 </div>
 
 <script>
@@ -267,7 +275,9 @@ const direction = document.getElementById("direction");
 const count = document.getElementById("count");
 const modeLabel = document.getElementById("modeLabel");
 const shiftBox = document.getElementById("shiftBox");
+const keyBox = document.getElementById("keyBox");
 const shift = document.getElementById("shift");
+const keyInput = document.getElementById("key");
 const copyButton = document.getElementById("copy");
 
 function charToMorse(char){
@@ -278,30 +288,88 @@ function morseToChar(code){
   if(code === "/") return " ";
 
   for(const char in MORSE_DICTIONARY){
-     if(MORSE_DICTIONARY[char] === code){
+    if(MORSE_DICTIONARY[char] === code){
       return char;
-      }
-   }
+    }
+  }
 
   return code;
- }
+}
+
+function atbash(text){
+  let result = "";
+
+  for(let i = 0; i < text.length; i++){
+    const code = text.charCodeAt(i);
+
+    if(code >= 65 && code <= 90){
+      result += String.fromCharCode(90 - (code - 65));
+    }
+    else if(code >= 97 && code <= 122){
+      result += String.fromCharCode(122 - (code - 97));
+    }
+    else{
+      result += text[i];
+    }
+  }
+
+  return result;
+}
+
+function vigenere(text, key, decode){
+  key = key.replace(/[^a-z]/gi, "").toUpperCase();
+
+  if(!key){
+    return text;
+  }
+
+  let result = "";
+  let keyIndex = 0;
+
+  for(let i = 0; i < text.length; i++){
+    const code = text.charCodeAt(i);
+
+    if(
+      (code >= 65 && code <= 90) ||
+      (code >= 97 && code <= 122)
+    ){
+      const base = code >= 97 ? 97 : 65;
+      const keyCode = key.charCodeAt(keyIndex % key.length) - 65;
+      const amount = decode ? -keyCode : keyCode;
+
+      result += String.fromCharCode(
+        ((code - base + amount) % 26 + 26) % 26 + base
+      );
+
+      keyIndex++;
+    }
+    else{
+      result += text[i];
+    }
+  }
+
+  return result;
+}
 
 function processSignal(){
   const text = input.value;
-     const isDecode = direction.value === "decode";
- 
+  const isDecode = direction.value === "decode";
+
   let offset = parseInt(shift.value);
 
   if(isNaN(offset)) offset = 0;
   if(offset < -25) offset = -25;
   if(offset > 25) offset = 25;
 
-  let result = "";
-
   shiftBox.style.display =
     mode.value === "shift" ? "block" : "none";
 
-   if(mode.value === "morse"){
+  keyBox.style.display =
+    mode.value === "vigenere" ? "block" : "none";
+
+  let result = "";
+
+  if(mode.value === "morse"){
 
     if(!isDecode){
       const parts = [];
@@ -311,9 +379,9 @@ function processSignal(){
       }
 
       result = parts.join(" ");
-     }
-     else{
-        const parts = text.trim().split(/\s+/);
+    }
+    else{
+      const parts = text.trim().split(/\s+/);
       const chars = [];
 
       for(let i = 0; i < parts.length; i++){
@@ -322,17 +390,17 @@ function processSignal(){
         }
       }
 
-       result = chars.join("");
-     }
+      result = chars.join("");
+    }
 
     modeLabel.textContent =
       isDecode ? "MORSE -> TEXT" : "TEXT -> MORSE";
-   }
- 
+  }
+
   else if(mode.value === "binary"){
 
     if(!isDecode){
-       const bytes = [];
+      const bytes = [];
 
       for(let i = 0; i < text.length; i++){
         let binary = text.charCodeAt(i).toString(2);
@@ -345,8 +413,8 @@ function processSignal(){
       }
 
       result = bytes.join(" ");
-     }
-     else{
+    }
+    else{
       const chunks = text.trim().split(/\s+/);
       const chars = [];
 
@@ -355,8 +423,8 @@ function processSignal(){
 
         if(!isNaN(number)){
           chars.push(String.fromCharCode(number));
-           }
-       }
+        }
+      }
 
       result = chars.join("");
     }
@@ -379,19 +447,19 @@ function processSignal(){
           ((code - 65 + key) % 26 + 26) % 26 + 65;
 
         chars.push(String.fromCharCode(shifted));
-       }
+      }
 
       else if(code >= 97 && code <= 122){
         const shifted =
           ((code - 97 + key) % 26 + 26) % 26 + 97;
 
         chars.push(String.fromCharCode(shifted));
-       }
- 
+      }
+
       else{
         chars.push(text[i]);
-        }
-     }
+      }
+    }
 
     result = chars.join("");
 
@@ -401,14 +469,35 @@ function processSignal(){
         : "TEXT -> CIPHER+" + offset;
   }
 
+  else if(mode.value === "atbash"){
+
+    result = atbash(text);
+
+    modeLabel.textContent =
+      isDecode ? "ATBASH -> TEXT" : "TEXT -> ATBASH";
+  }
+
+  else if(mode.value === "vigenere"){
+
+    result = vigenere(
+      text,
+      keyInput.value,
+      isDecode
+    );
+
+    modeLabel.textContent =
+      isDecode ? "VIGENERE -> TEXT" : "TEXT -> VIGENERE";
+  }
+
   output.value = result;
   count.textContent = text.length + " CH";
 }
 
 input.addEventListener("input", processSignal);
 direction.addEventListener("change", processSignal);
-  mode.addEventListener("change", processSignal);
- shift.addEventListener("input", processSignal);
+mode.addEventListener("change", processSignal);
+shift.addEventListener("input", processSignal);
+keyInput.addEventListener("input", processSignal);
 
 copyButton.onclick = async function(){
 
@@ -418,13 +507,14 @@ copyButton.onclick = async function(){
     await navigator.clipboard.writeText(output.value);
 
     const oldText = this.textContent;
-     this.textContent = "COPIED ✓";
+    this.textContent = "COPIED ✓";
 
     setTimeout(() => {
       this.textContent = oldText;
     }, 1200);
 
-  }catch(error){
+  }
+  catch(error){
     console.log("Copy failed:", error);
   }
 };
@@ -447,14 +537,15 @@ document.getElementById("swap").onclick = function(){
 document.getElementById("clear").onclick = function(){
 
   input.value = "";
-   output.value = "";
+  output.value = "";
+  keyInput.value = "";
 
-   processSignal();
-    input.focus();
+  processSignal();
+  input.focus();
 };
 
 processSignal();
 </script>
 
 </body>
-</html> 
+</html>
