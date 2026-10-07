@@ -130,7 +130,7 @@ input:focus{
 button{
   cursor:pointer;
   color:#6c8575;
-  transition:.15s;
+  transtion:.15s;
   font-weight:bold;
 }
 
@@ -240,11 +240,11 @@ button:hover{
         <div class="meta">
           <span>OUTPUT STREAM</span>
           <span id="modeLabel">MORSE</span>
-        </div>
-      </div>
+        </div> 
 
     </section>
 
+    
     <nav class="actions">
       <button id="copy">COPY SIGNAL</button>
       <button id="swap">↕ SWAP</button>
@@ -256,7 +256,7 @@ button:hover{
     </p>
 
   </main>
-</div>
+ 
 
 <script>
 const MORSE_DICTIONARY = {
@@ -322,7 +322,7 @@ function process(){
       result = chars.join("");
     }
 
-    modeLabel.textContent = isDecode ? "MORSE -> TEXT" : "TEXT -> MORSE";
+  modeLabel.textContent = isDecode ? "MORSE -> TEXT" : "TEXT -> MORSE";
   }
 
   else if(mode.value === "binary"){
@@ -335,7 +335,7 @@ function process(){
         }
         bytes.push(binary);
       }
-      result = bytes.join(" ");
+       result = bytes.join(" ");
     }
     else{
       const chunks = text.trim().split(/\s+/);
@@ -399,7 +399,7 @@ function process(){
   }
 
   else if(mode.value === "vigenere"){
-    let vKey = keyInput.val ? keyInput.val.replace(/[^a-z]/gi, "").toUpperCase() : "";
+    let vKey = keyInput.value.replace(/[^a-z]/gi, "").toUpperCase();
 
     if(!vKey){
       result = text;
