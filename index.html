@@ -130,7 +130,7 @@ input:focus{
 button{
   cursor:pointer;
   color:#6c8575;
-  transtion:.15s;
+  transition:.15s;
   font-weight:bold;
 }
 
@@ -187,7 +187,7 @@ button:hover{
 
   <main class="main">
 
-    <label for="direction">Direction</label>
+    <label for="direction">action</label>
     <select id="direction">
       <option value="encode">Encode</option>
       <option value="decode">Decode</option>
@@ -203,7 +203,7 @@ button:hover{
     </select>
 
     <div id="shiftBox" style="display:none;margin-top:12px;">
-      <label for="shift">Shift key offset</label>
+      <label for="shift">Shift key </label>
       <input id="shift" type="number" min="-25" max="25" value="3">
     </div>
 
@@ -215,11 +215,11 @@ button:hover{
     <section class="workspace">
 
       <div class="field">
-        <label for="input">Input </label>
+        <label for="input">Input text</label>
 
         <textarea
           id="input"
-          placeholder="Type or paste..."
+          placeholder="Type or paste  here..."
         ></textarea>
 
         <div class="meta">
@@ -240,11 +240,11 @@ button:hover{
         <div class="meta">
           <span>OUTPUT STREAM</span>
           <span id="modeLabel">MORSE</span>
-        </div> 
+        </div>
+      </div>
 
     </section>
 
-    
     <nav class="actions">
       <button id="copy">COPY SIGNAL</button>
       <button id="swap">↕ SWAP</button>
@@ -252,14 +252,14 @@ button:hover{
     </nav>
 
     <p class="notice">
-      ZIPHUS PROTOCOL // SECURE // DECODE OFFLINE
+      ZIPHUS PROTOCOL // SECURE // ENCRYPTION OFFLINE
     </p>
 
   </main>
- 
+</div>
 
 <script>
-const MORSE_DICTIONARY = {
+const Morse = {
   A:".-", B:"-...", C:"-.-.", D:"-..", E:".", F:"..-.",
   G:"--.", H:"....", I:"..", J:".---", K:"-.-", L:".-..",
   M:"--", N:"-.", O:"---", P:".--.", Q:"--.-", R:".-.",
@@ -270,207 +270,254 @@ const MORSE_DICTIONARY = {
   " ":"/"
 };
 
-const input = document.getElementById("input");
-const output = document.getElementById("output");
-const mode = document.getElementById("mode");
-const action = document.getElementById("direction");
-const count = document.getElementById("count");
-const modeLabel = document.getElementById("modeLabel");
-const shiftBox = document.getElementById("shiftBox");
-const keyBox = document.getElementById("keyBox");
-const shift = document.getElementById("shift");
-const keyInput = document.getElementById("key");
+const Input = document.getElementById("input");
+const Output = document.getElementById("output");
+const Mode = document.getElementById("mode");
+const Action = document.getElementById("direction");
+const Count = document.getElementById("count");
+const Label = document.getElementById("modeLabel");
+const Ceasarsett = document.getElementById("shiftBox");
+const Vigeneresett = document.getElementById("keyBox");
+const Shiftamount = document.getElementById("shift");
+const VkeyInput = document.getElementById("key");
 
-function process(){
-  const text = input.value;
-  const isDecode = action.value === "decode";
+function Convert(){
+  const text = Input.value;
+  const Decode = Action.value === "decode";
 
-  let offset = parseInt(shift.value) || 0;
+  let ShiftamountValue = parseInt(Shiftamount.value) || 0;
 
-  shiftBox.style.display = (mode.value === "shift") ? "block" : "none";
-  keyBox.style.display = (mode.value === "vigenere") ? "block" : "none";
+  Ceasarsett.style.display =
+    Mode.value === "shift" ? "block" : "none";
 
-  let result = "";
+  Vigeneresett.style.display =
+    Mode.value === "vigenere" ? "block" : "none";
 
-  if(mode.value === "morse"){
-    if(!isDecode){
-      const parts = [];
+  let Converted = "";
+
+  if(Mode.value === "morse"){
+
+    // morse
+    if(!Decode){
+      const Codes = [];
+
       for(let i = 0; i < text.length; i++){
-        const letter = text[i].toUpperCase();
-        const code = MORSE_DICTIONARY[letter] || letter;
-        parts.push(code);
+        const Letter = text[i].toUpperCase();
+        const Code = Morse[Letter] || Letter;
+        Codes.push(Code);
       }
-      result = parts.join(" ");
+
+      Converted = Codes.join(" ");
     }
     else{
-      const parts = text.trim().split(/\s+/);
-      const chars = [];
-      for(let i = 0; i < parts.length; i++){
-        if(parts[i] === "/"){
-          chars.push(" ");
+      const Codes = text.trim().split(/\s+/);
+      const Letters = [];
+
+      for(let i = 0; i < Codes.length; i++){
+        if(Codes[i] === "/"){
+          Letters.push(" ");
           continue;
         }
-        let found = parts[i];
-        for(const letter in MORSE_DICTIONARY){
-          if(MORSE_DICTIONARY[letter] === parts[i]){
-            found = letter;
+
+        let Found = Codes[i];
+
+        for(const Letter in Morse){
+          if(Morse[Letter] === Codes[i]){
+            Found = Letter;
             break;
           }
         }
-        chars.push(found);
+
+        Letters.push(Found);
       }
-      result = chars.join("");
+
+      Converted = Letters.join("");
     }
 
-  modeLabel.textContent = isDecode ? "MORSE -> TEXT" : "TEXT -> MORSE";
+    Label.textContent =
+      Decode ? "MORSE -> TEXT" : "TEXT -> MORSE";
   }
 
-  else if(mode.value === "binary"){
-    if(!isDecode){
-      const bytes = [];
+  else if(Mode.value === "binary"){
+    if(!Decode){
+      const Binaryvalue = [];
+
       for(let i = 0; i < text.length; i++){
-        let binary = text.charCodeAt(i).toString(2);
-        while(binary.length < 8){
-          binary = "0" + binary;
+        let Binary = text.charCodeAt(i).toString(2);
+
+        while(Binary.length < 8){
+          Binary = "0" + Binary;
         }
-        bytes.push(binary);
+
+        Binaryvalue.push(Binary);
       }
-       result = bytes.join(" ");
+
+      Converted = Binaryvalue.join(" ");
     }
     else{
-      const chunks = text.trim().split(/\s+/);
-      const chars = [];
-      for(let i = 0; i < chunks.length; i++){
-        const number = parseInt(chunks[i], 2);
-        if(!isNaN(number)){
-          chars.push(String.fromCharCode(number));
+      const Chunk = text.trim().split(/\s+/);
+      const Letters = [];
+
+      for(let i = 0; i < Chunk.length; i++){
+        const Number = parseInt(Chunk[i], 2);
+
+        if(!isNaN(Number)){
+          Letters.push(String.fromCharCode(Number));
         }
       }
-      result = chars.join("");
+
+      Converted = Letters.join("");
     }
 
-    modeLabel.textContent = isDecode ? "BINARY -> TEXT" : "TEXT -> BINARY";
+    Label.textContent =
+      Decode ? "BINARY -> TEXT" : "TEXT -> BINARY";
   }
 
-  else if(mode.value === "shift"){
-    const move = isDecode ? -offset : offset;
-    let textOutput = "";
+  else if(Mode.value === "shift"){
+    const Move = Decode ? -ShiftamountValue : ShiftamountValue;
+    let Converted = "";
 
     for(let i = 0; i < text.length; i++){
-      let chCode = text.charCodeAt(i);
+      let Code = text.charCodeAt(i);
 
-      if(chCode >= 65 && chCode <= 90){
-        let shifted = chCode + (move % 26);
-        if(shifted > 90) shifted -= 26;
-        if(shifted < 65) shifted += 26;
-        textOutput += String.fromCharCode(shifted);
+      if(Code >= 65 && Code <= 90){
+        let Shifted = Code + (Move % 26);
+
+        if(Shifted > 90) Shifted -= 26;
+        if(Shifted < 65) Shifted += 26;
+
+        Converted += String.fromCharCode(Shifted);
       }
-      else if(chCode >= 97 && chCode <= 122){
-        let shifted = chCode + (move % 26);
-        if(shifted > 122) shifted -= 26;
-        if(shifted < 97) shifted += 26;
-        textOutput += String.fromCharCode(shifted);
+      else if(Code >= 97 && Code <= 122){
+        let Shifted = Code + (Move % 26);
+
+        if(Shifted > 122) Shifted -= 26;
+        if(Shifted < 97) Shifted += 26;
+
+        Converted += String.fromCharCode(Shifted);
       }
       else{
-        textOutput += text[i];
+        Converted += text[i];
       }
     }
 
-    result = textOutput;
-    modeLabel.textContent = isDecode ? "CIPHER-" + offset + " -> TEXT" : "TEXT -> CIPHER+" + offset;
+    Label.textContent =
+      Decode
+      ? "CIPHER-" + ShiftamountValue + " -> TEXT"
+      : "TEXT -> CIPHER+" + ShiftamountValue;
   }
 
-  else if(mode.value === "atbash"){
-    let atbashResult = "";
+  else if(Mode.value === "atbash"){
+    let Converted = "";
+
     for(let i = 0; i < text.length; i++){
-      const code = text.charCodeAt(i);
-      if(code >= 65 && code <= 90){
-        atbashResult += String.fromCharCode(90 - (code - 65));
+      const Code = text.charCodeAt(i);
+
+      if(Code >= 65 && Code <= 90){
+        Converted += String.fromCharCode(90 - (Code - 65));
       }
-      else if(code >= 97 && code <= 122){
-        atbashResult += String.fromCharCode(122 - (code - 97));
+      else if(Code >= 97 && Code <= 122){
+        Converted += String.fromCharCode(122 - (Code - 97));
       }
       else{
-        atbashResult += text[i];
+        Converted += text[i];
       }
     }
-    result = atbashResult;
-    modeLabel.textContent = isDecode ? "ATBASH -> TEXT" : "TEXT -> ATBASH";
+
+    Label.textContent =
+      Decode ? "ATBASH -> TEXT" : "TEXT -> ATBASH";
   }
 
-  else if(mode.value === "vigenere"){
-    let vKey = keyInput.value.replace(/[^a-z]/gi, "").toUpperCase();
+  else if(Mode.value === "vigenere"){
+    let Vkey = VkeyInput.value
+      .replace(/[^a-z]/gi, "")
+      .toUpperCase();
 
-    if(!vKey){
-      result = text;
-    } else {
-      let vigResult = "";
-      let keyIndex = 0;
+    if(!Vkey){
+      Converted = text;
+    }
+    else{
+      let Converted = "";
+      let Keyp = 0;
 
       for(let i = 0; i < text.length; i++){
-        const code = text.charCodeAt(i);
-        if((code >= 65 && code <= 90) || (code >= 97 && code <= 122)){
-          const base = code >= 97 ? 97 : 65;
-          const keyCode = vKey.charCodeAt(keyIndex % vKey.length) - 65;
-          const amount = isDecode ? -keyCode : keyCode;
+        const Code = text.charCodeAt(i);
 
-          vigResult += String.fromCharCode(((code - base + amount) % 26 + 26) % 26 + base);
-          keyIndex++;
-        } else {
-          vigResult += text[i];
+        if(
+          (Code >= 65 && Code <= 90) ||
+          (Code >= 97 && Code <= 122)
+        ){
+          const Base = Code >= 97 ? 97 : 65;
+          const Keycode =
+            Vkey.charCodeAt(Keyp % Vkey.length) - 65;
+
+          const Amount = Decode ? -Keycode : Keycode;
+
+          Converted += String.fromCharCode(
+            ((Code - Base + Amount) % 26 + 26) % 26 + Base
+          );
+
+          Keyp++;
+        }
+        else{
+          Converted += text[i];
         }
       }
-      result = vigResult;
     }
 
-    modeLabel.textContent = isDecode ? "VIGENERE -> TEXT" : "TEXT -> VIGENERE";
+    Label.textContent =
+      Decode ? "VIGENERE -> TEXT" : "TEXT -> VIGENERE";
   }
 
-  output.value = result;
-  count.textContent = text.length + " CH";
+  Output.value = Converted;
+  Count.textContent = text.length + " CH";
 }
 
-input.addEventListener("input", process);
-action.addEventListener("change", process);
-mode.addEventListener("change", process);
-shift.addEventListener("input", process);
-keyInput.addEventListener("input", process);
+Input.addEventListener("input", Convert);
+Action.addEventListener("change", Convert);
+Mode.addEventListener("change", Convert);
+Shiftamount.addEventListener("input", Convert);
+VkeyInput.addEventListener("input", Convert);
 
 document.getElementById("copy").addEventListener("click", function(){
-  if(!output.value) return;
+  if(!Output.value) return;
 
-  navigator.clipboard.writeText(output.value);
+  navigator.clipboard.writeText(Output.value);
 
-  const btn = this;
-  const original = btn.textContent;
-  btn.textContent = "COPIED ✓";
+  const Button = this;
+  const Original = Button.textContent;
+
+  Button.textContent = "COPIED ✓";
 
   setTimeout(function(){
-    btn.textContent = original;
+    Button.textContent = Original;
   }, 1200);
 });
 
 document.getElementById("swap").addEventListener("click", function(){
-  if(!output.value) return;
+  if(!Output.value) return;
 
-  const savedText = input.value;
-  input.value = output.value;
-  output.value = savedText;
+  const SavedText = Input.value;
 
-  action.value = (action.value === "encode") ? "decode" : "encode";
-  process();
+  Input.value = Output.value;
+  Output.value = SavedText;
+
+  Action.value =
+    Action.value === "encode" ? "decode" : "encode";
+
+  Convert();
 });
 
 document.getElementById("clear").addEventListener("click", function(){
-  input.value = "";
-  output.value = "";
-  keyInput.value = "";
+  Input.value = "";
+  Output.value = "";
+  VkeyInput.value = "";
 
-  process();
-  input.focus();
+  Convert();
+  Input.focus();
 });
 
-process();
+Convert();
 </script>
 
 </body>
